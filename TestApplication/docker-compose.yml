@@ -1,5 +1,4 @@
 version: '3.8'
-
 services:
   testapplication:
     image: testapplication:latest
@@ -7,4 +6,23 @@ services:
       context: .
       dockerfile: Dockerfile
     ports:
-      - "0.0.0.0:8080:80"
+      - "8080:80"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ConnectionStrings__DefaultConnection=Host=postgres;Database=testapplication;Username=postgres;Password=yourpassword
+    depends_on:
+      - postgres
+
+  postgres:
+    image: postgres:latest
+    environment:
+      POSTGRES_DB: testapplication
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: yourpassword
+    ports:
+      - "5433:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+
+volumes:
+  postgres_data:
